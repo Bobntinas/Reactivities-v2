@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Grid, Loader } from "semantic-ui-react";
 import { PagingParams } from "../../../app/models/pagination";
@@ -12,7 +12,7 @@ import ActivityListItemPlaceholder from "./ActivityListItemPlaceholder";
 
 export default observer(function ActivityDashboard() {
     const { activityStore } = useStore();
-    const { loadActivities, activityRegistry, setPagingParams, pagination } = activityStore;
+    const { loadActivities, setPagingParams, pagination } = activityStore;
     const [loadingNext, setLoadingNext] = useState(false);
 
     function handleGetNext() {
@@ -22,8 +22,8 @@ export default observer(function ActivityDashboard() {
     }
 
     useEffect(() => {
-        if (activityRegistry.size <= 1) loadActivities();
-    }, [activityRegistry.size, loadActivities])
+        loadActivities();
+    }, [loadActivities])
 
     return (
         <Grid>

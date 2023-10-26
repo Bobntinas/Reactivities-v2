@@ -1,6 +1,8 @@
 using Application.Activities;
 using Application.Core;
 using Application.Interfaces;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
@@ -64,7 +66,7 @@ namespace API.Extensions
                          .AllowAnyMethod()
                          .AllowAnyHeader()
                          .AllowCredentials()
-                         .WithOrigins("http://localhost:3000");
+                         .WithOrigins("http://localhost:3000", "https://localhost:3000");
                  });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
@@ -73,6 +75,8 @@ namespace API.Extensions
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
             services.AddSignalR();
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<Create>();
 
             return services;
         }

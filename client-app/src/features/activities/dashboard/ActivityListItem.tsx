@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Icon, Item, ItemGroup, ItemHeader, Label, Segment, SegmentGroup } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';

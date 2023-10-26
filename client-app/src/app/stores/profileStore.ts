@@ -30,7 +30,7 @@ export default class ProfileStore {
         )
     }
 
-    setActiveTab = (activeTab: any) => {
+    setActiveTab = (activeTab: number) => {
         this.activeTab = activeTab;
     }
 

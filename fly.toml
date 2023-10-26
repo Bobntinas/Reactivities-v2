@@ -13,6 +13,7 @@ processes = []
   ASPNETCORE_URLS="http://+:8080"
   Cloudinary__CloudName="dudlb2iw5"
   Cloudinary__ApiKey="487924375773367"
+  Facebook_AppId="1611468785994756"
 
 [experimental]
   auto_rollback = true

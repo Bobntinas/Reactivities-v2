@@ -13,7 +13,7 @@ const sleep = (delay: number) => {
     })
 }
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 axios.interceptors.request.use(config => {
     const token = store.commonStore.token;
@@ -22,11 +22,11 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async response => {
-    if (process.env.NODE_ENV === 'development') await sleep(1000);
+    if (import.meta.env.DEV) await sleep(1000);
     const pagination = response.headers['pagination'];
     if (pagination) {
         response.data = new PaginatedResult(response.data, JSON.parse(pagination));
-        return response as AxiosResponse<PaginatedResult<any>>
+        return response as AxiosResponse<PaginatedResult<unknown>>
     }
     return response;
 }, (error: AxiosError) => {
@@ -36,7 +36,7 @@ axios.interceptors.response.use(async response => {
             if (typeof data === 'string') {
                 toast.error(data);
             }
-            if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
+            if (config.method === 'get' && Object.prototype.hasOwnProperty.call(data.errors, 'id')) {
                 router.navigate('/not-found');
             }
             if (data.errors) {
@@ -67,8 +67,8 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const requests = {
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
-    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
-    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+    post: <T>(url: string, body: object) => axios.post<T>(url, body).then(responseBody),
+    put: <T>(url: string, body: object) => axios.put<T>(url, body).then(responseBody),
     del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 }
 
@@ -84,13 +84,14 @@ const Activities = {
 const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => requests.post<User>('/account/login', user),
-    register: (user: UserFormValues) => requests.post<User>('/account/register', user)
+    register: (user: UserFormValues) => requests.post<User>('/account/register', user),
+    fbLogin: (accessToken: string) => requests.post<User>(`/account/fbLogin?accessToken=${accessToken}`, {})
 }
 
 const Profiles = {
     get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
     uploadPhoto: (file: Blob) => {
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('File', file);
         return axios.post<Photo>('photos', formData, {
             headers: { 'Content-type': 'multipart/form-data' }
